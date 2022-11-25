@@ -69,13 +69,13 @@ class NativeUpdater {
 
     /// Show the alert based on current platform
     if (Platform.isIOS) {
-      return _nativeUpdaterInstance._showCupertinoAlertDialog();
+      return await _nativeUpdaterInstance._showCupertinoAlertDialog();
     } else {
-      return _nativeUpdaterInstance._showMaterialAlertDialog();
+      return await _nativeUpdaterInstance._showMaterialAlertDialog();
     }
   }
 
-  Future _showCupertinoAlertDialog() {
+  Future _showCupertinoAlertDialog() async {
     /// Switch description based on whether it is force update or not.
     String selectedDefaultDescription;
 
@@ -96,7 +96,7 @@ class NativeUpdater {
       alertTitle: _iOSAlertTitle ?? 'Update Available',
     );
 
-    return showDialog(
+    return await showDialog(
       context: _context,
       barrierDismissible: _forceUpdate ? false : true,
       builder: (BuildContext context) {
@@ -113,11 +113,11 @@ class NativeUpdater {
       if (_updateInfo.updateAvailability ==
           UpdateAvailability.updateAvailable) {
         if (_forceUpdate == true) {
-          InAppUpdate.performImmediateUpdate().catchError((e) {
+          await InAppUpdate.performImmediateUpdate().catchError((e) {
             developer.log(e.toString());
           });
         } else if (_forceUpdate == false) {
-          InAppUpdate.startFlexibleUpdate().catchError((e) {
+          await InAppUpdate.startFlexibleUpdate().catchError((e) {
             developer.log(e.toString());
           });
         }
