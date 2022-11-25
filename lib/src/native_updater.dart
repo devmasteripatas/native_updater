@@ -69,9 +69,9 @@ class NativeUpdater {
 
     /// Show the alert based on current platform
     if (Platform.isIOS) {
-      _nativeUpdaterInstance._showCupertinoAlertDialog();
+      return _nativeUpdaterInstance._showCupertinoAlertDialog();
     } else {
-      _nativeUpdaterInstance._showMaterialAlertDialog();
+      return _nativeUpdaterInstance._showMaterialAlertDialog();
     }
   }
 
@@ -113,11 +113,13 @@ class NativeUpdater {
       if (_updateInfo.updateAvailability ==
           UpdateAvailability.updateAvailable) {
         if (_forceUpdate == true) {
-          InAppUpdate.performImmediateUpdate()
-              .catchError((e) => developer.log(e.toString()));
+          InAppUpdate.performImmediateUpdate().catchError((e) {
+            developer.log(e.toString());
+          });
         } else if (_forceUpdate == false) {
-          InAppUpdate.startFlexibleUpdate()
-              .catchError((e) => developer.log(e.toString()));
+          InAppUpdate.startFlexibleUpdate().catchError((e) {
+            developer.log(e.toString());
+          });
         }
       }
     } on PlatformException catch (e) {
