@@ -47,21 +47,18 @@ class _HomeState extends State<Home> {
         title: Text('Your App'),
       ),
       body: Center(
-        child: TextButton(
-            onPressed: requestAPI,
-            child: Text('Request API')
-        ),
+        child: TextButton(onPressed: requestAPI, child: Text('Request API')),
       ),
     );
   }
 
   requestAPI() async {
-    var dio = Dio(BaseOptions(
-      baseUrl: 'http://httpbin.org/',
-    ));
+    // var dio = Dio(BaseOptions(
+    //   baseUrl: 'http://httpbin.org/',
+    // ));
 
     try {
-      Response response = await dio.get('/get');
+      // Response response = await dio.get('/get');
     } on DioError catch (e) {
       checkVersion(e.response.statusCode);
     }
