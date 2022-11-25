@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info/package_info.dart';
 
-import 'error_material_alert.dart';
 import 'update_cupertino_alert.dart';
 
 class NativeUpdater {
@@ -125,18 +124,18 @@ class NativeUpdater {
     } on PlatformException catch (e) {
       developer.log(e.code.toString());
 
-      return showDialog(
-        context: _context,
-        builder: (BuildContext context) {
-          return ErrorMaterialAlert(
-            appName: _appName,
-            description: _errorText ??
-                'This version of $_appName was not installed from Google Play Store.',
-            errorCloseButtonLabel: _errorCloseButtonLabel,
-            errorSubtitle: _errorSubtitle,
-          );
-        },
-      );
+      // return showDialog(
+      //   context: _context,
+      //   builder: (BuildContext context) {
+      //     return ErrorMaterialAlert(
+      //       appName: _appName,
+      //       description: _errorText ??
+      //           'This version of $_appName was not installed from Google Play Store.',
+      //       errorCloseButtonLabel: _errorCloseButtonLabel,
+      //       errorSubtitle: _errorSubtitle,
+      //     );
+      //   },
+      // );
     }
   }
 }
