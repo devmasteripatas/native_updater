@@ -36,7 +36,7 @@ class NativeUpdater {
   static Future<CrossPlatformAppUpdateResult?> displayUpdateAlert(
     BuildContext context, {
     required bool forceUpdate,
-    String? appStoreUrl,
+    // String? appStoreUrl,
     String? forcedStoreVersion,
     String? iOSDescription,
     String? iOSUpdateButtonLabel,
