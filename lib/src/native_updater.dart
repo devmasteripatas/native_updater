@@ -4,16 +4,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:native_updater/src/update_cupertino_alert.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 
 import 'enum.dart';
-import 'update_cupertino_alert.dart';
 
 class NativeUpdater {
   late BuildContext _context;
   late bool _forceUpdate;
   late String _appName;
-  String? _appStoreUrl;
+  late String? _forcedStoreVersion;
+  // String? _appStoreUrl;
   String? _iOSDescription;
   String? _iOSUpdateButtonLabel;
   String? _iOSCloseButtonLabel;
@@ -35,6 +37,7 @@ class NativeUpdater {
     BuildContext context, {
     required bool forceUpdate,
     String? appStoreUrl,
+    String? forcedStoreVersion,
     String? iOSDescription,
     String? iOSUpdateButtonLabel,
     String? iOSCloseButtonLabel,
@@ -53,7 +56,8 @@ class NativeUpdater {
     _nativeUpdaterInstance._context = context;
     _nativeUpdaterInstance._forceUpdate = forceUpdate;
     _nativeUpdaterInstance._appName = info.appName;
-    _nativeUpdaterInstance._appStoreUrl = appStoreUrl;
+    _nativeUpdaterInstance._forcedStoreVersion = forcedStoreVersion;
+    // _nativeUpdaterInstance._appStoreUrl = appStoreUrl;
     _nativeUpdaterInstance._iOSDescription = iOSDescription;
     _nativeUpdaterInstance._iOSUpdateButtonLabel = iOSUpdateButtonLabel;
     _nativeUpdaterInstance._iOSCloseButtonLabel = iOSCloseButtonLabel;
@@ -75,7 +79,7 @@ class NativeUpdater {
     }
   }
 
-  Future _showCupertinoAlertDialog() async {
+  Future<CrossPlatformAppUpdateResult?> _showCupertinoAlertDialog() async {
     /// Switch description based on whether it is force update or not.
     String selectedDefaultDescription;
 
@@ -85,24 +89,47 @@ class NativeUpdater {
       selectedDefaultDescription = '$_appName $_recommendUpdateText';
     }
 
-    Widget alert = UpdateCupertinoAlert(
-      forceUpdate: _forceUpdate,
-      appName: _appName,
-      appStoreUrl: _appStoreUrl!,
-      description: _iOSDescription ?? selectedDefaultDescription,
-      updateButtonLabel: _iOSUpdateButtonLabel ?? 'Update',
-      closeButtonLabel: _iOSCloseButtonLabel ?? 'Close App',
-      ignoreButtonLabel: _iOSIgnoreButtonLabel ?? 'Later',
-      alertTitle: _iOSAlertTitle ?? 'Update Available',
-    );
+    final newVersionPlus = NewVersionPlus(forceAppVersion: _forcedStoreVersion);
 
-    return await showDialog(
-      context: _context,
-      barrierDismissible: _forceUpdate ? false : true,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    final status = await newVersionPlus.getVersionStatus();
+    // status.canUpdate // (true)
+    // status.localVersion // (1.2.1)
+    // status.storeVersion // (1.2.3)
+    // status.appStoreLink
+
+    if (status != null && status.canUpdate) {
+      Widget alert = UpdateCupertinoAlert(
+        forceUpdate: _forceUpdate,
+        appName: _appName,
+        appStoreUrl: status.appStoreLink,
+        description: _iOSDescription ?? selectedDefaultDescription,
+        updateButtonLabel: _iOSUpdateButtonLabel ?? 'Update',
+        closeButtonLabel: _iOSCloseButtonLabel ?? 'Close App',
+        ignoreButtonLabel: _iOSIgnoreButtonLabel ?? 'Later',
+        alertTitle: _iOSAlertTitle ?? 'Update Available',
+      );
+
+      return await showDialog(
+        context: _context,
+        barrierDismissible: _forceUpdate ? false : true,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+
+      //   await newVersionPlus.showUpdateDialog(
+      //       context: _context,
+      //       versionStatus: status,
+      //       dialogTitle: _iOSAlertTitle ?? 'Update Available',
+      //       dialogText: _iOSDescription ?? selectedDefaultDescription,
+      //       updateButtonText: _iOSUpdateButtonLabel ?? 'Update',
+      //       dismissButtonText: _iOSIgnoreButtonLabel ?? 'Later',
+      //       allowDismissal: !_forceUpdate
+      //       dismissAction: () => CrossPlatformAppUpdateResult.userDeniedUpdate,
+      //       );
+    }
+
+    return null;
   }
 
   Future<CrossPlatformAppUpdateResult?> _showMaterialAlertDialog() async {
@@ -134,7 +161,7 @@ class NativeUpdater {
     } on PlatformException catch (e) {
       developer.log(e.code.toString());
 
-      return CrossPlatformAppUpdateResult.inAppUpdateFailed;
+      return CrossPlatformAppUpdateResult.UpdateFailed;
 
       // return showDialog(
       //   context: _context,

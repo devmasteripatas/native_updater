@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import 'enum.dart';
+
 class UpdateCupertinoAlert extends StatelessWidget {
   final bool forceUpdate;
   final String appName;
@@ -29,12 +31,16 @@ class UpdateCupertinoAlert extends StatelessWidget {
     /// Set up the Buttons
     Widget closeAppButton = CupertinoDialogAction(
       child: Text(closeButtonLabel),
-      onPressed: () => exit(0),
+      onPressed: () {
+        // CrossPlatformAppUpdateResult.userDeniedUpdate
+        exit(0);
+      },
     );
 
     Widget ignoreButton = CupertinoDialogAction(
       child: Text(ignoreButtonLabel),
-      onPressed: () => Navigator.pop(context),
+      onPressed: () =>
+          Navigator.pop(context, CrossPlatformAppUpdateResult.userDeniedUpdate),
     );
 
     Widget updateButton = CupertinoDialogAction(

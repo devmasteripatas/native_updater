@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   in_app_update: ^4.0.1
+  new_version_plus: ^0.0.9
   package_info_plus: ^3.0.3
   url_launcher: ^6.1.10
 
