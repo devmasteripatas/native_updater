@@ -3,7 +3,7 @@ import 'package:in_app_update/in_app_update.dart';
 enum CrossPlatformAppUpdateResult {
   success,
   userDeniedUpdate,
-  inAppUpdateFailed;
+  UpdateFailed;
 }
 
 CrossPlatformAppUpdateResult fromAppUpdateResult(AppUpdateResult other) {
@@ -13,8 +13,8 @@ CrossPlatformAppUpdateResult fromAppUpdateResult(AppUpdateResult other) {
     case AppUpdateResult.userDeniedUpdate:
       return CrossPlatformAppUpdateResult.userDeniedUpdate;
     case AppUpdateResult.inAppUpdateFailed:
-      return CrossPlatformAppUpdateResult.inAppUpdateFailed;
+      return CrossPlatformAppUpdateResult.UpdateFailed;
     default:
-      return CrossPlatformAppUpdateResult.inAppUpdateFailed;
+      return CrossPlatformAppUpdateResult.UpdateFailed;
   }
 }
