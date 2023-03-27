@@ -39,22 +39,20 @@ class _HomeState extends State<Home> {
 
     Future.delayed(Duration.zero, () {
       if (statusCode == 412) {
-        NativeUpdater.displayUpdateAlert(
-          context,
-          forceUpdate: true,
-          appStoreUrl: '<Your App Store URL>',
-          iOSDescription: '<Your iOS description>',
-          iOSUpdateButtonLabel: 'Upgrade',
-          iOSCloseButtonLabel: 'Exit',
-          errorText: "Error",
-          errorCloseButtonLabel: "Close",
-          errorSubtitle: "This version of the app isn't legit"
-        );
+        NativeUpdater.displayUpdateAlert(context,
+            forceUpdate: true,
+            // appStoreUrl: '<Your App Store URL>',
+            iOSDescription: '<Your iOS description>',
+            iOSUpdateButtonLabel: 'Upgrade',
+            iOSCloseButtonLabel: 'Exit',
+            errorText: "Error",
+            errorCloseButtonLabel: "Close",
+            errorSubtitle: "This version of the app isn't legit");
       } else if (serverLatestVersion > localVersion) {
         NativeUpdater.displayUpdateAlert(
           context,
           forceUpdate: false,
-          appStoreUrl: '<Your App Store URL>',
+          // appStoreUrl: '<Your App Store URL>',
           iOSDescription: '<Your description>',
           iOSUpdateButtonLabel: 'Upgrade',
           iOSIgnoreButtonLabel: 'Next Time',

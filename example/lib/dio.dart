@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
         NativeUpdater.displayUpdateAlert(
           context,
           forceUpdate: true,
-          appStoreUrl: '<Your App Store URL>',
+          // appStoreUrl: '<Your App Store URL>',
           iOSDescription: '<Your iOS description>',
           iOSUpdateButtonLabel: 'Upgrade',
           iOSCloseButtonLabel: 'Exit',
