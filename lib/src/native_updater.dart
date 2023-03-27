@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
+import 'enum.dart';
 import 'update_cupertino_alert.dart';
 
 class NativeUpdater {
@@ -20,9 +21,9 @@ class NativeUpdater {
   String? _iOSAlertTitle;
   String? _requireUpdateText;
   String? _recommendUpdateText;
-  String? _errorText;
-  String? _errorCloseButtonLabel;
-  String? _errorSubtitle;
+  // String? _errorText;
+  // String? _errorCloseButtonLabel;
+  // String? _errorSubtitle;
 
   /// Singleton related
   static final NativeUpdater _nativeUpdaterInstance = NativeUpdater._internal();
@@ -30,7 +31,7 @@ class NativeUpdater {
   NativeUpdater._internal();
 
   /// Displaying update alert
-  static Future displayUpdateAlert(
+  static Future<CrossPlatformAppUpdateResult?> displayUpdateAlert(
     BuildContext context, {
     required bool forceUpdate,
     String? appStoreUrl,
@@ -62,9 +63,9 @@ class NativeUpdater {
         'requires that you update to the latest version. You cannot use this app until it is updated.';
     _nativeUpdaterInstance._recommendUpdateText = recommendUpdateText ??
         'recommends that you update to the latest version. You can keep using this app while downloading the update.';
-    _nativeUpdaterInstance._errorText = errorText;
-    _nativeUpdaterInstance._errorCloseButtonLabel = errorCloseButtonLabel;
-    _nativeUpdaterInstance._errorSubtitle = errorSubtitle;
+    // _nativeUpdaterInstance._errorText = errorText;
+    // _nativeUpdaterInstance._errorCloseButtonLabel = errorCloseButtonLabel;
+    // _nativeUpdaterInstance._errorSubtitle = errorSubtitle;
 
     /// Show the alert based on current platform
     if (Platform.isIOS) {
@@ -104,7 +105,7 @@ class NativeUpdater {
     );
   }
 
-  Future _showMaterialAlertDialog() async {
+  Future<CrossPlatformAppUpdateResult?> _showMaterialAlertDialog() async {
     /// In App Update Related
     try {
       AppUpdateInfo _updateInfo = await InAppUpdate.checkForUpdate();
@@ -112,17 +113,28 @@ class NativeUpdater {
       if (_updateInfo.updateAvailability ==
           UpdateAvailability.updateAvailable) {
         if (_forceUpdate == true) {
-          await InAppUpdate.performImmediateUpdate().catchError((e) {
+          final result =
+              await InAppUpdate.performImmediateUpdate().catchError((e) {
             developer.log(e.toString());
+            return AppUpdateResult.inAppUpdateFailed;
           });
+
+          return Future.value(fromAppUpdateResult(result));
         } else if (_forceUpdate == false) {
-          await InAppUpdate.startFlexibleUpdate().catchError((e) {
+          final result =
+              await InAppUpdate.startFlexibleUpdate().catchError((e) {
             developer.log(e.toString());
+            return AppUpdateResult.inAppUpdateFailed;
           });
+          return fromAppUpdateResult(result);
         }
       }
+
+      return null;
     } on PlatformException catch (e) {
       developer.log(e.code.toString());
+
+      return CrossPlatformAppUpdateResult.inAppUpdateFailed;
 
       // return showDialog(
       //   context: _context,

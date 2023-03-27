@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class UpdateMaterialAlert extends StatelessWidget {
   final bool forceUpdate;
@@ -14,17 +14,16 @@ class UpdateMaterialAlert extends StatelessWidget {
   final String ignoreButtonLabel;
   final String newVersionLabel;
 
-  UpdateMaterialAlert({
-    required this.forceUpdate,
-    required this.appName,
-    required this.playStoreUrl,
-    required this.titlePrefix,
-    required this.description,
-    required this.updateButtonLabel,
-    required this.closeButtonLabel,
-    required this.ignoreButtonLabel,
-    this.newVersionLabel = 'New version available'
-  });
+  UpdateMaterialAlert(
+      {required this.forceUpdate,
+      required this.appName,
+      required this.playStoreUrl,
+      required this.titlePrefix,
+      required this.description,
+      required this.updateButtonLabel,
+      required this.closeButtonLabel,
+      required this.ignoreButtonLabel,
+      this.newVersionLabel = 'New version available'});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,7 @@ class UpdateMaterialAlert extends StatelessWidget {
       child: Text(updateButtonLabel.toUpperCase(),
           style: TextStyle(color: Colors.white)),
       style: flatButtonStyle,
-      onPressed: () => launch(playStoreUrl),
+      onPressed: () => launchUrlString(playStoreUrl),
     );
 
     return AlertDialog(
